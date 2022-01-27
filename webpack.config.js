@@ -1,38 +1,70 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const webpack = require('webpack')
-module.exports ={
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const {CleanWebpackPlugin} = require("clean-webpack-plugin")
+const CopyWebpackPlugin = require("copy-webpack-plugin")
+const webpack = require("webpack");
+module.exports = {
     entry: {
-        main: './src/index.js',
+        main: [ "./src/index.jsx"],
     },
-    output:{
-        path : path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
+    output: {
+        path: path.resolve(__dirname, "dist"),
+        filename: "static/js/bundle.js",
     },
-    mode: 'development',
+    mode: "development",
     devServer: {
-        static: {
-            directory: path.join(__dirname, 'src'),
-        },
+        hot: true,
         port: 3000,
-        host: 'localhost'
+        host: "localhost",
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
-        })
+            template: "./public/index.html",
+        }),
+        new CleanWebpackPlugin(),
+        
     ],
-    module:{
+    module: {
         rules: [
             {
                 test: /\.css$/,
-                use: ['style-loader', 'css-loader']
+                use: ["style-loader", "css-loader"],
             },
             {
-                test:/\.(png|jpg|svg|gif)$/,
-                use:['file-loader']
-            }
-        ]
-    }
-    
-}
+                test: /\.s[ac]ss$/i,
+                use:["style-loader", "css-loader", "sass-loader"]
+            },
+            {
+                test: /\.(png|jpg|svg|gif)$/,
+                use: {
+                    loader: "file-loader",
+                    options: {
+                        name: '/img/[path]/[name].[ext]',
+                    }
+                }
+                
+            },
+            {
+                test: /\.m?js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@babel/preset-env"],
+                    },
+                },
+                test: /\.jsx$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ["@babel/preset-react"],
+                    },
+                },
+                resolve: {
+                    extensions: ["js", ".jsx"],
+                }
+            },
+        ],
+    },
+};
