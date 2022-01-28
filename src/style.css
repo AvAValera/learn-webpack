@@ -1,9 +1,8 @@
+@import "~normalize.css";
 
+.app{
+    box-sizing: border-box;
+}
 h1{
     text-align: center;
-}
-.logo{
-    width: 100px;
-    height: 100px;
-    background-size: cover;
 }
